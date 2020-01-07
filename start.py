@@ -1,2 +1,2 @@
 #get rekt richard
-print("Hello World") # fixed your shit!
+print("Hello World") #fixed your shit!
