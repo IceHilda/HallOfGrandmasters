@@ -61,7 +61,7 @@ def repeat_sort(A):
     return final_nums
 
 
-repeat_sort(your_list)
+#repeat_sort(your_list)
 """
 Jarvis is weak in computing palindromes for Alphanumeric characters.
 While Ironman is busy fighting Thanos, he needs to activate sonic punch but Jarvis is stuck in computing palindromes.
@@ -76,3 +76,4 @@ def test_palindrome(S):
 # word[2]
 # word[-1]
 # word[::-1]  # just means backwards
+

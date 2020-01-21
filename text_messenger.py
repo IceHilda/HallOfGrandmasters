@@ -1,5 +1,6 @@
 # Example from https://realpython.com/python-send-email
-import smtplib, ssl
+import smtplib
+import ssl
 
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
@@ -13,7 +14,6 @@ with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
     server.login(sender_email, password)
     server.sendmail(sender_email, receiver_email, message)
 
-server.sendmail
 
 #AT&T: [number]@txt.att.net
 #Sprint: [number]@messaging.sprintpcs.com or [number]@pm.sprint.com
@@ -25,4 +25,3 @@ server.sendmail
 #Tracfone: [number]@mmst5.tracfone.com
 #U.S. Cellular: [number]@email.uscc.net
 #Virgin Mobile: [number]@vmobl.com
-server.sendmail
