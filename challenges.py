@@ -70,10 +70,96 @@ If you are unable to solve it then it may result in the death of Iron Man.
 """
 S = ["racecar", "butter", "boob", "palindrome"]
 
+
 def test_palindrome(S):
     for word in S:
         print(word[0:] == word[::-1])
 # word[2]
 # word[-1]
 # word[::-1]  # just means backwards
+
+"""
+Challenge: Get user input and save to a file called "settings.txt"
+"""
+#user_input = input("What to save? ")
+
+#with open("settings.txt", "w") as file:
+#    file.write(user_input)
+
+#with open("settings.txt", "r") as file:
+#    blank_space = file.read()
+#    print(blank_space)
+
+
+"""
+Challenge: Read "essay.txt" and count how many words there are. Bonus for calculating average word length.
+"""
+def count_words():
+    with open("essay.txt", "r") as file:
+        written_essay = file.read()
+    # create word count
+    word_count = 0
+    #look at each individual letter and the following character if it is followed by anything other than " " then ignore it.
+    for letter in written_essay:
+        previous_letter = letter
+        if letter == " ":
+            word_count += 1
+
+# if it is followed by a  " " add +1 to word count
+
+#print word count
+#print(word_count)
+
+# look at each individual letter and the following character if it is followed by anything other than " " then ignore it.
+#word_count = 0
+#previous_letter = ""
+#for letter in written_essay:
+#    if letter == " " and previous_letter != " ":
+#        word_count += 1
+
+#essay_list = written_essay.split(' ')
+#print(len(essay_list))
+
+"""
+Challenge: Given a list of numbers, return the lowest number that can be made as a sum of two list items, that is not 
+divisible by any other list item.
+my_nums = [7, 3, 0, 30, 5, 4, 11, 8, 23]
+"""
+
+#my_nums = [6, 3, 7, 4]
+my_nums = [7, 3, 30, 5, 4, 11, 8, 23]
+
+def lowest_calc(numbers):
+    numbers.sort()
+    print(numbers)
+    smallest_int = numbers[0] + numbers[1]
+    return smallest_int
+
+
+#result = lowest_calc(my_nums)
+#print(result)
+
+def lowest_unique(numbers):
+    numbers.sort()
+    lowest_list = []
+    for x in numbers:
+        for y in numbers:
+            lowest_sum = x + y
+            #print(lowest_sum)
+            lowest_list.append(lowest_sum)
+    lowest_list.sort()
+    lowest_list1 = lowest_list.copy()
+
+    for z in lowest_list1:
+        for num in numbers:
+            if z % num == 0:
+                try:
+                    lowest_list.remove(z)
+                except:
+                    pass
+
+    print(lowest_list[0])
+    #print(lowest_list)
+lowest_unique(my_nums)
+
 

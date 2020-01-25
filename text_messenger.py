@@ -1,6 +1,5 @@
 # Example from https://realpython.com/python-send-email
-import smtplib
-import ssl
+import smtplib, ssl
 
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
