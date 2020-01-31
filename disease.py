@@ -17,7 +17,7 @@ gridsize = 100
 # Basic sim
 infect_rate = 0.1
 heal_rate = 0.01
-kill_rate = 0.02
+kill_rate = 0.01
 
 # Common cold
 # infect_rate = 0.02
@@ -34,9 +34,16 @@ grid = np.zeros((gridsize, gridsize))
 # Create patient zero
 grid[np.random.randint(0, gridsize), np.random.randint(0, gridsize)] = 1
 
-sickos = [1]
-immune = [0]
-t = [0]
+# A collection of lists to track patients over time
+tally = {
+    "healthy": [gridsize**2 - 1],
+    "sickos": [1],
+    "immune": [0],
+    "dead": [0],
+    "cured": [0],
+    "time": [0]
+    }
+
 
 
 def infect(r, c):
@@ -56,6 +63,9 @@ def infect(r, c):
 
 
 def turn(grid):
+    """
+    Perform actions on all infected members of the population in a random order
+    """
     # Select infected people
     rows, cols = np.where(grid == 1)
     #print(f"Infected at {rows}, {cols}")
@@ -72,18 +82,32 @@ def turn(grid):
         # chance to infect
         else:
             infect(rows[i], cols[i])
+    # Re-count everything
+    add_tally(grid)
     return grid
 
 
-def tally(grid):
-    # Count number of infected people in the grid
-    current_sickos = len(grid[grid == 1])
-    current_immune = len(grid[grid == -1])
+def add_tally(grid):
+    """
+    Count up the number of
+    :param grid:
+    :return:
+    """
+    # Count number of each patient type in the grid
+    tally['healthy'].append(len(grid[grid == 0]))
+    tally['sickos'].append(len(grid[grid == 1]))
+    tally['immune'].append(len(grid[grid == -1]))
+    tally['dead'].append(len(grid[grid == 2]))
+    tally['time'].append(tally['time'][-1]+1)
 
-    sickos.append(current_sickos)
-    immune.append(current_immune)
-    t.append(t[-1]+1)
 
+def show_summary():
+    print(f"Ended at day {tally['time'][-1]} with: \n"
+          f"{len(grid[grid == 0])} never infected,\n"
+          f"{len(grid[grid == -1])} cured,\n"
+          f"{len(grid[grid == 2])} killed.")
+    max_idx = tally['sickos'].index(max(tally['sickos']))
+    print(f"Disease peaked at day {tally['time'][max_idx]} with {max(tally['sickos'])} infected.")
 
 # Unreadable figure setup bullshit
 fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [5, 1]})
@@ -94,8 +118,9 @@ boundaries = [-1, 0, 1, 2, 3]
 norm = colors.BoundaryNorm(boundaries, cmap.N, clip=True)
 p1 = ax1.imshow(grid, cmap=cmap, norm=norm, animated=True)
 #p2 = ax2.plot(tally(grid), 'r')
-p2, = ax2.plot(t, sickos, 'r', animated=True)
-p3, = ax2.plot(t, immune, 'g', animated=True)
+p2, = ax2.plot(tally['time'], tally['sickos'], 'r', animated=True)
+p3, = ax2.plot(tally['time'], tally['immune'], 'g', animated=True)
+p4, = ax2.plot(tally['time'], tally['dead'], 'k', animated=True)
 ax2.set_ylim(0, gridsize**2)
 ax1.xaxis.set_visible(False)
 ax1.yaxis.set_visible(False)
@@ -110,19 +135,22 @@ def updatefig(*args):
     Function that's called automatically by the animation loop
     """
     p1.set_array(turn(grid))
-    tally(grid)
-    p2.set_data(t, sickos)
-    p3.set_data(t, immune)
-    ax2.set_xlim(0, max(t))
-   # ax2.set_ylim(0, max(max(sickos), max(immune)))
+    p2.set_data(tally['time'], tally['sickos'])
+    p3.set_data(tally['time'], tally['immune'])
+    p4.set_data(tally['time'], tally['dead'])
+    ax2.set_xlim(0, max(tally['time']))
+    # ax2.set_ylim(0, max(max(sickos), max(immune)))
     # End sim if the disease is gone
-    if sickos[-1] == 0:
+    if tally['sickos'][-1] == 0:
         ani.event_source.stop()
-    return p1, p2, p3,
+        show_summary()
+    return p1, p2, p3, p4,
 
 
 ani = animation.FuncAnimation(fig, updatefig, interval=5, blit=True)  # , fargs=(p1, p2)
 plt.show()
+
+
 
 # plotobject.set_data(grid)
 # plt.draw()
