@@ -7,22 +7,25 @@ Simple simulation showing the spread of disease
 """
 
 import numpy as np
+#import numba as nb
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.colors as colors
+import time
 
+start_time = time.process_time()
 
 gridsize = 100
 
 # Basic sim
-infect_rate = 0.1
-heal_rate = 0.01
-kill_rate = 0.01
+# infect_rate = 0.05
+# heal_rate = 0.02
+# kill_rate = 0.01
 
 # Common cold
-# infect_rate = 0.02
-# heal_rate = 0.02
-# kill_rate = 0.002
+infect_rate = 0.02
+heal_rate = 0.03
+kill_rate = 0.002
 
 # Ebola
 # infect_rate = 0.1
@@ -40,11 +43,14 @@ tally = {
     "sickos": [1],
     "immune": [0],
     "dead": [0],
-    "cured": [0],
     "time": [0]
     }
 
 
+def calc_infect(*args, **kwargs):
+    return np.random.binomial(1, infect_rate)
+
+v_calc_infect = np.vectorize(calc_infect)
 
 def infect(r, c):
     """
@@ -53,13 +59,25 @@ def infect(r, c):
     :param c:
     :return:
     """
-    for nr in np.arange(-1, 2):
-        for nc in np.arange(-1, 2):
-            try:
-                if grid[r+nr, c+nc] == 0:
-                    grid[r+nr, c+nc] = np.random.binomial(1, infect_rate)
-            except IndexError:  # Out of bounds, ignore
-                pass
+    subset = grid[r-1:r+2, c-1:c+2]
+    print(f"Looking at ({r-1}, {c-1}) through ({r+1}, {c+1})")
+    # np.where(subset == 0)
+    # subset[subset == 0] = np.fromfunction(calc_infect, shape=())
+    #v_calc_infect(subset[subset == 0])
+    #for i in np.nditer(subset):
+    #    if subset[i] == 0:
+    #        subset[i] = np.random.binomial(1, infect_rate)
+    for x in np.nditer(subset, op_flags=['readwrite']):
+        if x == 0:
+            x[...] = calc_infect()
+
+    # for nr in np.arange(-1, 2):
+    #     for nc in np.arange(-1, 2):
+    #         try:
+    #             if grid[r+nr, c+nc] == 0:
+    #                 grid[r+nr, c+nc] = np.random.binomial(1, infect_rate)
+    #         except IndexError:  # Out of bounds, ignore
+    #             pass
 
 
 def turn(grid):
@@ -109,6 +127,7 @@ def show_summary():
     max_idx = tally['sickos'].index(max(tally['sickos']))
     print(f"Disease peaked at day {tally['time'][max_idx]} with {max(tally['sickos'])} infected.")
 
+
 # Unreadable figure setup bullshit
 fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [5, 1]})
 fig.set_figheight(8)
@@ -143,15 +162,14 @@ def updatefig(*args):
     # End sim if the disease is gone
     if tally['sickos'][-1] == 0:
         ani.event_source.stop()
+        end_time = time.process_time()
         show_summary()
+        print("Process time:", end_time - start_time)
     return p1, p2, p3, p4,
+
+
 
 
 ani = animation.FuncAnimation(fig, updatefig, interval=5, blit=True)  # , fargs=(p1, p2)
 plt.show()
-
-
-
-# plotobject.set_data(grid)
-# plt.draw()
 
