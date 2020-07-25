@@ -1,6 +1,28 @@
-extern
-node_modules
-tmp
-vendor
-.idea/workspace.xml
-.idea/misc.xml
+"""
+Given a set of items (from a text file) that have a given weight and value, find
+the combination of items of greatest value that fit into a bag of limited space.
+
+Desired output:
+> With a given weight of XX, you should take these XX items:
+> 1. (value) (weight)
+>  ...
+>
+> Total value: XX
+
+"""
+# Initialize variables
+max_weight = 35
+item_file = 'items.txt'
+multiple_uses = False
+
+# 1. Read in items from file
+weights = (5, 1, 13, 2, 1, 13, 5, 5, 1, 15, 12, 3, 3, 15, 13, 12)
+values = (3, 7, 15, 9, 4, 5, 15, 11, 8, 14, 5, 15, 7, 10, 3, 5)
+
+
+# 2. Solve the backpack problem :)
+calculated_value =
+
+
+
+
