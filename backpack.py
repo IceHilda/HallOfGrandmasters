@@ -12,13 +12,18 @@ Desired output:
 """
 
 # Initialize variables
-max_weight = 35
+max_weight = 56
 item_file = 'items.txt'
 multiple_uses = False
 
 # 1. Read in items from file
-weights = (5, 1, 13, 2, 1, 13, 5, 5, 1, 15, 12, 3, 3, 15, 13, 12)
-values = (3, 7, 15, 9, 4, 5, 15, 11, 8, 14, 5, 15, 7, 10, 3, 5)
+# weights = (5, 1, 13, 2, 1, 13, 5, 5, 1, 15, 12, 3, 3, 15, 13, 12)
+# values = (3, 7, 15, 9, 4, 5, 15, 11, 8, 14, 5, 15, 7, 10, 3, 5)
+
+weights = (4,9,15,15,20,4,11,16,20,6,15,5,6,13,4,16,11,11,20,16,6,16,5,18,7,13,7,7,5,9,18,10,7,5,7)
+values = (4,4,8,2,6,10,5,8,9,9,1,2,8,10,2,6,1,5,4,8,4,8,5,5,1,8,9,1,3,4,3,2,6,8,1)
+
+
 # items_left = []
 
 # 2. Solve the backpack problem :)
@@ -36,6 +41,7 @@ print(calculated_value)
 
 #max weight = 35 find out the best possible way to fill backpack
 current_weight = 0
+current_value = 0
 # Some sort of while loop
 while current_weight < max_weight:
     if len(calculated_value) == 0:
@@ -50,6 +56,7 @@ while current_weight < max_weight:
         continue
 
     # Take the item
+    current_value += values[actual_item_index]
     current_weight += weights[actual_item_index]
     # Pop out based on best_value_index
     calculated_value.pop(best_value_index)
@@ -57,7 +64,7 @@ while current_weight < max_weight:
     print(f"adding item with weight {weights[actual_item_index]} and value {values[actual_item_index]}")
 
 
-print("Bag is full, final weight:", current_weight)
+print(f"Bag is full, final weight: {current_weight}\tfinal value: {current_value}")
 
 # End!
 
